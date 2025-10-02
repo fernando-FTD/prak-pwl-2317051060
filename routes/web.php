@@ -21,6 +21,6 @@ Route::get('/', function () {
 
 Route::get('/profil/{nama}/{npm}/{kelas}', [ProfilController::class, 'profil']);
 
-route::get('/user', [UserController:class, 'index']);
+route::get('/user', [UserController::class, 'index']);
 route::get('/user/create', [UserController::class, 'create'])->name('user.create');
 route::post('/user', [UserController::class, 'store'])->name('user.store');

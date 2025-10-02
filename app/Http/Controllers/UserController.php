@@ -8,45 +8,61 @@ use App\Models\UserModel;
 
 class UserController extends Controller
 {
-
-    public $userModel;
-    public $kelasModel;
-
-    public function __construct(){
-        $this->userModel = new UserModel();
-        $this->kelasModel = new Kelas();
+    public function index()
+    {
+        $data = [
+            'title' => 'List User',
+            'users' => UserModel::with('kelas')->latest()->get(),
+        ];
+        return view('list_user', $data);
     }
 
-    public function store(Request $request){
-        $this->userModel->create([
-            'nama' => $request->input('nama'),
-            'nim' => $request->input('npm'),
+    public function create()
+    {
+        $data = [
+            'title' => 'Create User',
+            'kelas' => Kelas::all(),
+        ];
+        return view('create_user', $data);
+    }
+
+    public function store(Request $request)
+    {
+        UserModel::create([
+            'nama'     => $request->input('nama'),
+            'nim'      => $request->input('npm'),
             'kelas_id' => $request->input('kelas_id'),
         ]);
 
-        return redirect()->to('\user');
+        return redirect()->to('/user');
     }
 
-    public function getUser(){
-        return $this->join('kelas', 'kelas.id', '=', 'user.kelas_id')
-                    ->select('user.*', 'kelas.nama_kelas as nama_kelas')
-                    ->get();
+    public function destroy($id)
+    {
+        $user = UserModel::findOrFail($id);
+        $user->delete();
+        return redirect()->to('/user')->with('success', 'User berhasil dihapus');
     }
-    public function create(){
-        $kelasModel = new Kelas();
-        $kelas = $kelasModel->getKelas();
-        $data = [
-            'title' => 'Create User',
+
+    public function edit($id)
+    {
+        $user = UserModel::findOrFail($id);
+        $kelas = Kelas::all();
+        return view('user_edit', [
+            'title' => 'Edit User',
+            'user'  => $user,
             'kelas' => $kelas,
-        ];
-        return view('create user', $data);
+        ]);
     }
 
-    public function index(){
-        $data = [
-            'title' => 'List User',
-            'users' => $this->userModel->getUser(),
-        ];
-        return view('list_user', $data);
+    public function update(Request $request, $id)
+    {
+        $user = UserModel::findOrFail($id);
+        $user->update([
+            'nama'     => $request->input('nama'),
+            'nim'      => $request->input('npm'),
+            'kelas_id' => $request->input('kelas_id'),
+        ]);
+        return redirect()->to('/user')->with('success', 'User berhasil diupdate');
     }
 }

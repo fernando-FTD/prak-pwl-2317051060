@@ -1,4 +1,3 @@
-{{-- Kode untuk resources/views/components/navbar.blade.php --}}
 <nav class="bg-gray-800 shadow-md">
     <div class="container mx-auto px-4">
         <div class="flex items-center justify-between h-16">
